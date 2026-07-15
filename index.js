@@ -27,6 +27,7 @@ app.get('/', (req, res) => {
                     justify-content: center;
                     height: 100vh;
                     margin: 0;
+                    text-align: center;
                 }
                 h1 {
                     color: #66fcf1;
@@ -42,6 +43,23 @@ app.get('/', (req, res) => {
                     padding: 10px 20px;
                     border-radius: 8px;
                     border: 1px solid #66fcf1;
+                    margin-bottom: 20px;
+                }
+                .btn {
+                    background-color: #66fcf1;
+                    color: #0b0c10;
+                    padding: 12px 24px;
+                    border: none;
+                    border-radius: 5px;
+                    font-weight: bold;
+                    font-size: 1.1rem;
+                    cursor: pointer;
+                    text-decoration: none;
+                    transition: 0.3s;
+                }
+                .btn:hover {
+                    background-color: #45a29e;
+                    color: #ffffff;
                 }
             </style>
         </head>
@@ -51,6 +69,8 @@ app.get('/', (req, res) => {
                 <p>🟢 Estado: <strong>Online</strong></p>
             </div>
             <p>El bot de moderación inteligente está listo y protegiendo servidores.</p>
+            <br>
+            <a href="https://discord.com/oauth2/authorize?client_id=${process.env.CLIENT_ID}&permissions=8&scope=bot%20applications.commands" target="_blank" class="btn">🤖 Invitar a Korven</a>
         </body>
         </html>
     `);
@@ -71,7 +91,6 @@ const client = new Client({
     ]
 });
 
-// Definición de nuestros Slash Commands
 const commands = [
     {
         name: 'ping',
@@ -79,35 +98,28 @@ const commands = [
     }
 ];
 
-// Evento cuando el bot se conecta
 client.once('ready', async () => {
     console.log(`🤖 ¡Korven ha iniciado sesión con éxito como ${client.user.tag}!`);
 
-    // Registrar los Slash Commands en Discord de forma automática al encenderse
     const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
 
     try {
-        console.log('🔄 Iniciando la actualización de los comandos globales (/) de Korven...');
-
+        console.log('🔄 Actualizando comandos globales de Korven...');
         await rest.put(
             Routes.applicationCommands(process.env.CLIENT_ID),
             { body: commands }
         );
-
-        console.log('✅ ¡Comandos (/) registrados con éxito en todos los servidores!');
+        console.log('✅ ¡Comandos (/) de Korven listos a nivel global!');
     } catch (error) {
         console.error('❌ Error al registrar los comandos:', error);
     }
 });
 
-// Evento para detectar y responder a los Slash Commands (interacciones)
 client.on('interactionCreate', async (interaction) => {
-    // Si la interacción no es un comando de barra diagonal (/), no hacemos nada
     if (!interaction.isChatInputCommand()) return;
 
     const { commandName } = interaction;
 
-    // Manejar el comando /ping
     if (commandName === 'ping') {
         const pingDeConsola = client.ws.ping;
         await interaction.reply({
@@ -116,6 +128,5 @@ client.on('interactionCreate', async (interaction) => {
     }
 });
 
-// Conectamos el bot
 client.login(process.env.DISCORD_TOKEN);
 
