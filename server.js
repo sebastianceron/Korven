@@ -21,64 +21,327 @@ function startServer() {
                         --neon-blue: #66fcf1;
                         --neon-dark: #45a29e;
                     }
-                    * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
-                    body { background-color: var(--bg-primary); color: var(--text-primary); text-align: center; }
-                    header { padding: 20px; border-bottom: 1px solid rgba(102, 252, 241, 0.1); }
-                    .logo-text { font-size: 1.5rem; font-weight: bold; color: var(--neon-blue); letter-spacing: 2px; }
-                    .hero { padding: 60px 20px; }
-                    .hero-badge { display: inline-block; background: var(--bg-secondary); border: 1px solid var(--neon-blue); padding: 5px 15px; border-radius: 50px; font-size: 0.9rem; color: var(--neon-blue); margin-bottom: 20px; }
-                    .hero-badge span { width: 10px; height: 10px; background: #2ecc71; border-radius: 50%; display: inline-block; margin-right: 5px; }
-                    h1 { font-size: 3rem; margin-bottom: 15px; }
-                    h1 span { color: var(--neon-blue); }
-                    p { color: var(--text-secondary); max-width: 600px; margin: 0 auto 30px; font-size: 1.1rem; }
-                    .btn-group { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
-                    .btn { padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold; }
-                    .btn-primary { background: var(--neon-blue); color: var(--bg-primary); }
-                    .btn-secondary { background: var(--bg-secondary); color: var(--text-primary); border: 1px solid rgba(197,198,199,0.2); }
-                    .stats-container { background: var(--bg-secondary); padding: 40px; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; margin-top: 40px; }
-                    .stat-card h3 { color: var(--neon-blue); font-size: 2rem; }
-                    .features { padding: 60px 20px; }
-                    .features h2 { margin-bottom: 40px; }
-                    .features h2 span { color: var(--neon-blue); }
-                    .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; max-width: 1000px; margin: 0 auto; }
-                    .feature-card { background: rgba(31, 40, 51, 0.4); padding: 25px; border-radius: 12px; text-align: left; border: 1px solid rgba(102, 252, 241, 0.05); }
-                    .feature-icon { color: var(--neon-blue); font-size: 1.8rem; margin-bottom: 15px; }
-                    footer { padding: 30px; border-top: 1px solid rgba(197,198,199,0.05); color: var(--text-secondary); }
+
+                    * {
+                        margin: 0;
+                        padding: 0;
+                        box-sizing: border-box;
+                        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+                    }
+
+                    body {
+                        background-color: var(--bg-primary);
+                        color: var(--text-primary);
+                        overflow-x: hidden;
+                    }
+
+                    /* --- NAVBAR --- */
+                    header {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        padding: 20px 8%;
+                        border-bottom: 1px solid rgba(102, 252, 241, 0.1);
+                        background: rgba(11, 12, 16, 0.95);
+                        position: sticky;
+                        top: 0;
+                        z-index: 1000;
+                        backdrop-filter: blur(10px);
+                    }
+
+                    .logo-container {
+                        display: flex;
+                        align-items: center;
+                        gap: 12px;
+                    }
+
+                    .logo-text {
+                        font-size: 1.5rem;
+                        font-weight: 800;
+                        letter-spacing: 2px;
+                        color: var(--neon-blue);
+                        text-shadow: 0 0 10px rgba(102, 252, 241, 0.3);
+                    }
+
+                    /* --- HERO SECTION --- */
+                    .hero {
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: center;
+                        min-height: 80vh;
+                        text-align: center;
+                        padding: 40px 20px;
+                        background: radial-gradient(circle, rgba(102,252,241,0.05) 0%, rgba(11,12,16,1) 70%);
+                    }
+
+                    /* Animación del Hero */
+                    @keyframes float {
+                        0% { transform: translateY(0px); }
+                        50% { transform: translateY(-15px); }
+                        100% { transform: translateY(0px); }
+                    }
+
+                    .hero-badge {
+                        background-color: var(--bg-secondary);
+                        border: 1px solid var(--neon-blue);
+                        padding: 6px 16px;
+                        border-radius: 50px;
+                        font-size: 0.9rem;
+                        color: var(--neon-blue);
+                        font-weight: bold;
+                        margin-bottom: 25px;
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                        box-shadow: 0 0 15px rgba(102, 252, 241, 0.15);
+                    }
+
+                    .hero-badge span {
+                        width: 10px;
+                        height: 10px;
+                        background-color: #2ecc71;
+                        border-radius: 50%;
+                        display: inline-block;
+                        box-shadow: 0 0 8px #2ecc71;
+                    }
+
+                    .hero h1 {
+                        font-size: 4rem;
+                        font-weight: 900;
+                        letter-spacing: 3px;
+                        margin-bottom: 15px;
+                        animation: float 5s ease-in-out infinite;
+                    }
+
+                    .hero h1 span {
+                        color: var(--neon-blue);
+                        text-shadow: 0 0 20px rgba(102, 252, 241, 0.4);
+                    }
+
+                    .hero p {
+                        color: var(--text-secondary);
+                        font-size: 1.3rem;
+                        max-width: 600px;
+                        margin-bottom: 40px;
+                        line-height: 1.6;
+                    }
+
+                    /* Botones */
+                    .btn-group {
+                        display: flex;
+                        flex-wrap: wrap;
+                        gap: 15px;
+                        justify-content: center;
+                    }
+
+                    .btn {
+                        padding: 14px 28px;
+                        border-radius: 8px;
+                        font-size: 1rem;
+                        font-weight: bold;
+                        text-decoration: none;
+                        transition: all 0.3s ease;
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+                    }
+
+                    .btn-primary {
+                        background-color: var(--neon-blue);
+                        color: var(--bg-primary);
+                        box-shadow: 0 4px 15px rgba(102, 252, 241, 0.3);
+                    }
+
+                    .btn-primary:hover {
+                        background-color: var(--neon-dark);
+                        transform: translateY(-3px);
+                        color: var(--text-primary);
+                    }
+
+                    .btn-secondary {
+                        background-color: var(--bg-secondary);
+                        color: var(--text-primary);
+                        border: 1px solid rgba(197, 198, 199, 0.2);
+                    }
+
+                    .btn-secondary:hover {
+                        background-color: rgba(197, 198, 199, 0.1);
+                        border-color: var(--neon-blue);
+                        transform: translateY(-3px);
+                    }
+
+                    /* --- ESTADÍSTICAS --- */
+                    .stats-container {
+                        background-color: var(--bg-secondary);
+                        padding: 50px 8%;
+                        display: grid;
+                        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                        gap: 30px;
+                        text-align: center;
+                        border-top: 1px solid rgba(102, 252, 241, 0.1);
+                        border-bottom: 1px solid rgba(102, 252, 241, 0.1);
+                    }
+
+                    .stat-card h3 {
+                        font-size: 2.5rem;
+                        color: var(--neon-blue);
+                        margin-bottom: 10px;
+                        font-weight: 800;
+                    }
+
+                    .stat-card p {
+                        color: var(--text-secondary);
+                        font-size: 0.95rem;
+                        text-transform: uppercase;
+                        letter-spacing: 1px;
+                    }
+
+                    /* --- CARACTERÍSTICAS --- */
+                    .features {
+                        padding: 80px 8%;
+                        text-align: center;
+                    }
+
+                    .features h2 {
+                        font-size: 2.5rem;
+                        margin-bottom: 50px;
+                        letter-spacing: 1px;
+                    }
+
+                    .features h2 span {
+                        color: var(--neon-blue);
+                    }
+
+                    .features-grid {
+                        display: grid;
+                        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                        gap: 25px;
+                    }
+
+                    .feature-card {
+                        background-color: rgba(31, 40, 51, 0.4);
+                        border: 1px solid rgba(102, 252, 241, 0.05);
+                        padding: 30px 20px;
+                        border-radius: 12px;
+                        text-align: left;
+                        transition: all 0.3s ease;
+                    }
+
+                    .feature-card:hover {
+                        border-color: var(--neon-blue);
+                        transform: translateY(-5px);
+                        background-color: rgba(31, 40, 51, 0.8);
+                    }
+
+                    .feature-icon {
+                        font-size: 2rem;
+                        color: var(--neon-blue);
+                        margin-bottom: 20px;
+                    }
+
+                    .feature-card h4 {
+                        font-size: 1.25rem;
+                        margin-bottom: 10px;
+                    }
+
+                    .feature-card p {
+                        color: var(--text-secondary);
+                        font-size: 0.95rem;
+                        line-height: 1.5;
+                    }
+
+                    /* --- FOOTER --- */
+                    footer {
+                        padding: 40px;
+                        text-align: center;
+                        border-top: 1px solid rgba(197, 198, 199, 0.05);
+                        color: var(--text-secondary);
+                        font-size: 0.9rem;
+                    }
+
+                    footer span {
+                        color: var(--neon-blue);
+                    }
                 </style>
             </head>
             <body>
-                <header><span class="logo-text">KORVEN</span></header>
+
+                <header>
+                    <div class="logo-container">
+                        <span class="logo-text">KORVEN</span>
+                    </div>
+                </header>
+
                 <section class="hero">
-                    <div class="hero-badge"><span></span> Online • Uptime 99.99%</div>
+                    <div class="hero-badge">
+                        <span></span> Online • Uptime 99.99%
+                    </div>
                     <h1>PROTECCIÓN <span>INTELIGENTE</span></h1>
-                    <p>El bot definitivo de moderación, automoderación y gestión de comunidades de Discord.</p>
+                    <p>El bot definitivo de moderación, automoderación y gestión de comunidades de Discord. Mantén tu servidor seguro de forma automatizada y profesional.</p>
+                    
                     <div class="btn-group">
-                        <a href="https://discord.com/oauth2/authorize?client_id=${process.env.CLIENT_ID}&permissions=8&scope=bot%20applications.commands" target="_blank" class="btn btn-primary"><i class="fab fa-discord"></i> Invitar</a>
-                        <a href="#" class="btn btn-secondary">Dashboard</a>
-                        <a href="#" class="btn btn-secondary">Documentación</a>
+                        <a href="https://discord.com/oauth2/authorize?client_id=${process.env.CLIENT_ID}&permissions=8&scope=bot%20applications.commands" target="_blank" class="btn btn-primary">
+                            <i class="fab fa-discord"></i> Invitar a Korven
+                        </a>
+                        <a href="#" class="btn btn-secondary">
+                            <i class="fas fa-sliders"></i> Ir al Dashboard
+                        </a>
+                        <a href="#" class="btn btn-secondary">
+                            <i class="fas fa-book"></i> Documentación
+                        </a>
                     </div>
                 </section>
+
                 <section class="stats-container">
-                    <div class="stat-card"><h3>1,254</h3><p>👥 Servidores</p></div>
-                    <div class="stat-card"><h3>284,000</h3><p>👤 Usuarios</p></div>
-                    <div class="stat-card"><h3>15,203,114</h3><p>⚡ Acciones</p></div>
+                    <div class="stat-card">
+                        <h3>1,254</h3>
+                        <p>👥 Servidores</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>284,000</h3>
+                        <p>👤 Usuarios Protegidos</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>15,203,114</h3>
+                        <p>⚡ Acciones Realizadas</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>99.99%</h3>
+                        <p>⏱️ Uptime Oficial</p>
+                    </div>
                 </section>
+
                 <section class="features">
                     <h2>Servicios de <span>Korven</span></h2>
                     <div class="features-grid">
                         <div class="feature-card">
                             <div class="feature-icon"><i class="fas fa-shield-halved"></i></div>
                             <h4>Moderación Inteligente</h4>
-                            <p>Bans, Kicks, Mutes y Warns bajo control.</p>
+                            <p>Comandos avanzados de administración: Bans, Kicks, Mutes y Warns centralizados en un potente sistema.</p>
                         </div>
                         <div class="feature-card">
                             <div class="feature-icon"><i class="fas fa-robot"></i></div>
-                            <h4>AutoMod</h4>
-                            <p>Filtros anti-spam, enlaces y palabras.</p>
+                            <h4>AutoMod Configurable</h4>
+                            <p>Bloqueo instantáneo de enlaces no autorizados, invitaciones y filtrado de palabras prohibidas ajustable.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon"><i class="fas fa-list-check"></i></div>
+                            <h4>Logs y Auditoría</h4>
+                            <p>Monitoreo completo de acciones en canales de texto, ediciones, eliminaciones y registros de actividad.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon"><i class="fas fa-door-open"></i></div>
+                            <h4>Bienvenida y Autoroles</h4>
+                            <p>Recibe a tus nuevos miembros con mensajes personalizados de bienvenida y asignación automática de roles.</p>
                         </div>
                     </div>
                 </section>
-                <footer><p>&copy; 2026 Korven Bot.</p></footer>
+
+                <footer>
+                    <p>&copy; 2026 <span>Korven Bot</span>. Smart Moderation. Powerful Protection.</p>
+                </footer>
+
             </body>
             </html>
         `);
