@@ -57,22 +57,35 @@ client.on('interactionCreate', async (interaction) => {
     }
 });
 
-// Evento bienvenidas y autoroles
+// Evento bienvenidas y autoroles (Humanos y Bots separados)
 client.on('guildMemberAdd', async (member) => {
     const config = db.get(`guilds.${member.guild.id}`).value();
     if (!config) return;
 
-    // Auto Rol
-    if (config.autoroleId) {
-        try {
-            const role = member.guild.roles.cache.get(config.autoroleId);
-            if (role) await member.roles.add(role);
-        } catch (err) {
-            console.error('❌ Error Auto Rol:', err);
+    // --- SISTEMA DE AUTO ROL ---
+    if (member.user.bot) {
+        // Es un Bot -> Asignar rol de bots
+        if (config.autoroleBotId) {
+            try {
+                const role = member.guild.roles.cache.get(config.autoroleBotId);
+                if (role) await member.roles.add(role);
+            } catch (err) {
+                console.error('❌ Error Auto Rol para Bots:', err);
+            }
+        }
+    } else {
+        // Es un Humano -> Asignar rol de usuarios
+        if (config.autoroleId) {
+            try {
+                const role = member.guild.roles.cache.get(config.autoroleId);
+                if (role) await member.roles.add(role);
+            } catch (err) {
+                console.error('❌ Error Auto Rol para Usuarios:', err);
+            }
         }
     }
 
-    // Bienvenida
+    // --- SISTEMA DE BIENVENIDA ---
     if (config.welcomeChannel && config.welcomeMessage) {
         try {
             const channel = member.guild.channels.cache.get(config.welcomeChannel);

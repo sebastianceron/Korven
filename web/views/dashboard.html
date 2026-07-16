@@ -99,11 +99,18 @@
 
         <div id="autorole-section" class="content-section">
             <h1>Configuración de Auto Roles</h1>
-            <p class="subtitle">Asigna roles de forma automática a los nuevos miembros.</p>
-            <div class="form-group">
-                <label>ID del Rol Automático</label>
-                <input type="text" class="form-control" placeholder="Ej: 998877665544332211" id="autorole-id">
+            <p class="subtitle">Gestiona la asignación automática de roles para tu comunidad de forma separada.</p>
+            
+            <div class="form-group" style="margin-bottom: 30px;">
+                <label><i class="fas fa-user"></i> Rol para Nuevos Usuarios (Humano)</label>
+                <input type="text" class="form-control" placeholder="ID del Rol para usuarios comunes. Ej: 998877665544332211" id="autorole-id">
             </div>
+
+            <div class="form-group" style="margin-bottom: 30px;">
+                <label><i class="fas fa-robot"></i> Rol para Nuevos Bots</label>
+                <input type="text" class="form-control" placeholder="ID del Rol para bots añadidos. Ej: 887766554433221100" id="autorole-bot-id">
+            </div>
+
             <button class="save-btn" onclick="saveAutorole()"><i class="fas fa-save"></i> Guardar Ajustes</button>
         </div>
     </div>
@@ -153,6 +160,7 @@
             document.getElementById('welcome-channel').value = data.welcomeChannel || '';
             document.getElementById('welcome-message').value = data.welcomeMessage || '';
             document.getElementById('autorole-id').value = data.autoroleId || '';
+            document.getElementById('autorole-bot-id').value = data.autoroleBotId || '';
         }
 
         async function saveWelcome() {
@@ -170,12 +178,13 @@
         async function saveAutorole() {
             const guildId = document.getElementById('guild-selector').value;
             const autoroleId = document.getElementById('autorole-id').value;
+            const autoroleBotId = document.getElementById('autorole-bot-id').value;
             const res = await fetch('/api/settings/' + guildId, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ autoroleId })
+                body: JSON.stringify({ autoroleId, autoroleBotId })
             });
-            if (res.ok) alert('✅ ¡Auto Rol guardado!');
+            if (res.ok) alert('✅ ¡Auto Roles guardados!');
         }
 
         window.onload = initDashboard;
