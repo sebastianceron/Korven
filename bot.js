@@ -1,4 +1,6 @@
-const { Client, GatewayIntentBits, REST, Routes, PermissionFlagsBits, ApplicationCommandOptionType } = require('discord.js');
+const { Client, GatewayIntentBits, REST, Routes, PermissionFlagsBits, ApplicationCommandOptionType, EmbedBuilder } = require('discord.js');
+const fs = require('fs');
+const path = require('path');
 
 const client = new Client({
     intents: [
@@ -16,12 +18,12 @@ const commands = [
     },
     {
         name: 'clear',
-        description: 'Borra una cantidad específica de mensajes del chat',
+        description: 'Borra una cantidad específica de mensajes del chat.',
         defaultMemberPermissions: PermissionFlagsBits.ManageMessages.toString(),
         options: [
             {
                 name: 'cantidad',
-                description: 'Número de mensajes a eliminar (1 - 100)',
+                description: 'Número de mensajes a eliminar (1 - 100).',
                 type: ApplicationCommandOptionType.Integer,
                 required: true
             }
@@ -29,18 +31,18 @@ const commands = [
     },
     {
         name: 'kick',
-        description: 'Expulsa a un usuario',
+        description: 'Expulsa a un usuario.',
         defaultMemberPermissions: PermissionFlagsBits.KickMembers.toString(),
         options: [
             {
                 name: 'usuario',
-                description: 'El miembro a expulsar',
+                description: 'El miembro a expulsar.',
                 type: ApplicationCommandOptionType.User,
                 required: true
             },
             {
                 name: 'razon',
-                description: 'Razón de la expulsión',
+                description: 'Razón de la expulsión.',
                 type: ApplicationCommandOptionType.String,
                 required: false
             }
@@ -48,18 +50,18 @@ const commands = [
     },
     {
         name: 'ban',
-        description: 'Banea permanentemente a un usuario',
+        description: 'Banea permanentemente a un usuario.',
         defaultMemberPermissions: PermissionFlagsBits.BanMembers.toString(),
         options: [
             {
                 name: 'usuario',
-                description: 'El miembro a banear',
+                description: 'El miembro a banear.',
                 type: ApplicationCommandOptionType.User,
                 required: true
             },
             {
                 name: 'razon',
-                description: 'Razón del baneo',
+                description: 'Razón del baneo.',
                 type: ApplicationCommandOptionType.String,
                 required: false
             }
@@ -67,18 +69,18 @@ const commands = [
     },
     {
         name: 'unban',
-        description: 'Desbanea a un usuario utilizando su ID de Discord',
+        description: 'Desbanea a un usuario utilizando su ID de Discord.',
         defaultMemberPermissions: PermissionFlagsBits.BanMembers.toString(),
         options: [
             {
                 name: 'id',
-                description: 'La ID de Discord del usuario desbaneado',
+                description: 'La ID de Discord del usuario desbaneado.',
                 type: ApplicationCommandOptionType.String,
                 required: true
             },
             {
                 name: 'razon',
-                description: 'Razón del desbaneo',
+                description: 'Razón del desbaneo.',
                 type: ApplicationCommandOptionType.String,
                 required: false
             }
@@ -86,18 +88,18 @@ const commands = [
     },
     {
         name: 'warn',
-        description: 'Aplica una advertencia formal',
+        description: 'Aplica una advertencia formal.',
         defaultMemberPermissions: PermissionFlagsBits.ModerateMembers.toString(),
         options: [
             {
                 name: 'usuario',
-                description: 'El miembro a advertir',
+                description: 'El miembro a advertir.',
                 type: ApplicationCommandOptionType.User,
                 required: true
             },
             {
                 name: 'razon',
-                description: 'Razón de la advertencia',
+                description: 'Razón de la advertencia.',
                 type: ApplicationCommandOptionType.String,
                 required: true
             }
@@ -105,20 +107,45 @@ const commands = [
     },
     {
         name: 'unwarn',
-        description: 'Retira una advertencia a un usuario',
+        description: 'Retira una advertencia a un usuario.',
         defaultMemberPermissions: PermissionFlagsBits.ModerateMembers.toString(),
         options: [
             {
                 name: 'usuario',
-                description: 'El miembro al que se le retirará la advertencia',
+                description: 'El miembro al que se le retirará la advertencia.',
                 type: ApplicationCommandOptionType.User,
                 required: true
             },
             {
                 name: 'razon',
-                description: 'Razón del unwarn',
+                description: 'Razón del unwarn.',
                 type: ApplicationCommandOptionType.String,
                 required: false
+            }
+        ]
+    },
+    {
+        name: 'logs',
+        description: 'Configura el canal de registros (logs) de moderación.',
+        defaultMemberPermissions: PermissionFlagsBits.Administrator.toString(),
+        options: [
+            {
+                name: 'establecer',
+                description: 'Establece el canal de texto para los logs.',
+                type: ApplicationCommandOptionType.Subcommand,
+                options: [
+                    {
+                        name: 'canal',
+                        description: 'El canal de texto donde se enviarán los logs.',
+                        type: ApplicationCommandOptionType.Channel,
+                        required: true
+                    }
+                ]
+            },
+            {
+                name: 'desactivar',
+                description: 'Desactiva el envío de logs de moderación.',
+                type: ApplicationCommandOptionType.Subcommand
             }
         ]
     }
@@ -129,7 +156,7 @@ function startBot() {
         console.log(`🤖 Korven conectado como ${client.user.tag}`);
         const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
         try {
-            console.log('🔄 Registrando comandos globales...');
+            console.log('Registrando comandos globales...');
             await rest.put(Routes.applicationCommands(process.env.CLIENT_ID), { body: commands });
             console.log('✅ ¡Comandos registrados!');
         } catch (error) {
@@ -153,34 +180,43 @@ function startBot() {
             try {
                 await interaction.channel.bulkDelete(cantidad, true);
                 return interaction.reply({ content: `🧹 Borrados **${cantidad}** mensajes.`, ephemeral: true });
-            } catch {
+            } catch (error) {
                 return interaction.reply({ content: '❌ Error al borrar (mensajes muy viejos).', ephemeral: true });
             }
         }
 
         // --- KICK ---
         if (commandName === 'kick') {
-            const user = options.getMember('usuario');
-            const razon = options.getString('razon') || 'Sin razón';
-            if (!user || !user.kickable) return interaction.reply({ content: '❌ No puedo expulsar a este usuario.', ephemeral: true });
-            await user.kick(razon);
-            return interaction.reply({ content: `👢 **${user.user.tag}** expulsado. Razón: ${razon}` });
+            const usuario = options.getUser('usuario');
+            const razon = options.getString('razon') || 'Sin razón especificada';
+            const miembro = guild.members.cache.get(usuario.id);
+            if (!miembro) return interaction.reply({ content: '❌ El usuario no está en el servidor.', ephemeral: true });
+            try {
+                await miembro.kick(razon);
+                return interaction.reply({ content: `👢 **${usuario.tag}** fue expulsado. Razón: ${razon}` });
+            } catch (err) {
+                return interaction.reply({ content: '❌ No tengo permisos suficientes para expulsar a este usuario.', ephemeral: true });
+            }
         }
 
         // --- BAN ---
         if (commandName === 'ban') {
-            const user = options.getMember('usuario');
-            const razon = options.getString('razon') || 'Sin razón';
-            if (!user || !user.bannable) return interaction.reply({ content: '❌ No puedo banear a este usuario.', ephemeral: true });
-            await user.ban({ reason: razon });
-            return interaction.reply({ content: `🔨 **${user.user.tag}** baneado. Razón: ${razon}` });
+            const usuario = options.getUser('usuario');
+            const razon = options.getString('razon') || 'Sin razón especificada';
+            const miembro = guild.members.cache.get(usuario.id);
+            if (!miembro) return interaction.reply({ content: '❌ El usuario no está en el servidor.', ephemeral: true });
+            try {
+                await miembro.ban({ reason: razon });
+                return interaction.reply({ content: `🔨 **${usuario.tag}** fue baneado. Razón: ${razon}` });
+            } catch (err) {
+                return interaction.reply({ content: '❌ No tengo permisos suficientes para banear a este usuario.', ephemeral: true });
+            }
         }
 
         // --- UNBAN ---
         if (commandName === 'unban') {
             const userId = options.getString('id');
             const razon = options.getString('razon') || 'Sin razón especificada';
-
             try {
                 await guild.members.unban(userId, razon);
                 return interaction.reply({ content: `🔓 El usuario con ID **${userId}** ha sido desbaneado con éxito.\n📄 **Razón:** ${razon}` });
@@ -201,10 +237,67 @@ function startBot() {
         if (commandName === 'unwarn') {
             const user = options.getUser('usuario');
             const razon = options.getString('razon') || 'Arrepentimiento / Buen comportamiento';
-            
-            // Envía mensaje privado informando al usuario que se le retiró el warn
             await user.send(`✅ Se te ha retirado una advertencia en el servidor **${guild.name}**.\n📄 **Razón:** ${razon}`).catch(() => {});
             return interaction.reply({ content: `✅ Se ha retirado la advertencia a **${user.tag}** con éxito.\n📄 **Razón:** ${razon}` });
+        }
+
+        // --- LOGS (NUEVO COMANDO) ---
+        if (commandName === 'logs') {
+            const subcommand = options.getSubcommand();
+            const guildId = guild.id;
+            const dbPath = path.join(__dirname, `data/guilds/${guildId}.json`);
+
+            let guildData = {};
+            if (fs.existsSync(dbPath)) {
+                try {
+                    guildData = JSON.parse(fs.readFileSync(dbPath, 'utf8'));
+                } catch (e) {
+                    console.error("Error al leer base de datos local:", e);
+                }
+            }
+
+            if (subcommand === 'establecer') {
+                const canal = options.getChannel('canal');
+
+                if (!canal.isTextBased()) {
+                    return interaction.reply({ 
+                        content: '❌ Por favor, selecciona un canal de texto válido.', 
+                        ephemeral: true 
+                    });
+                }
+
+                guildData.logsChannelId = canal.id;
+
+                fs.mkdirSync(path.dirname(dbPath), { recursive: true });
+                fs.writeFileSync(dbPath, JSON.stringify(guildData, null, 4));
+
+                await interaction.reply({ 
+                    content: `⚙️ **Logs Configurados:** Los registros de moderación ahora se enviarán al canal ${canal}.`,
+                    ephemeral: true 
+                });
+
+                try {
+                    await canal.send({
+                        content: '🛡️ **Canal de Logs Activado:** Este canal recibirá el historial de acciones de Korven.'
+                    });
+                } catch (err) {
+                    await interaction.followUp({ 
+                        content: '⚠️ **Advertencia:** No pude enviar un mensaje al canal. Revisa mis permisos.', 
+                        ephemeral: true 
+                    });
+                }
+
+            } else if (subcommand === 'desactivar') {
+                guildData.logsChannelId = null;
+
+                fs.mkdirSync(path.dirname(dbPath), { recursive: true });
+                fs.writeFileSync(dbPath, JSON.stringify(guildData, null, 4));
+
+                await interaction.reply({ 
+                    content: '✅ Se han desactivado los logs de moderación.', 
+                    ephemeral: true 
+                });
+            }
         }
     });
 
