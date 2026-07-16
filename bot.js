@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits, REST, Routes, PermissionFlagsBits, ApplicationCommandOptionType, EmbedBuilder } = require('discord.js');
+const { Client, GatewayIntentBits, REST, Routes, PermissionFlagsBits, ApplicationCommandOptionType } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
 
@@ -10,7 +10,7 @@ const client = new Client({
     ]
 });
 
-// Definición de Comandos de Barra (/) actualizados
+// Lista definitiva de Comandos de Barra (/)
 const commands = [
     {
         name: 'ping',
@@ -154,11 +154,15 @@ const commands = [
 function startBot() {
     client.once('ready', async () => {
         console.log(`🤖 Korven conectado como ${client.user.tag}`);
+        
+        // Obtenemos de forma ultra-segura el CLIENT_ID directo del bot si no existe en las variables de entorno
+        const clientId = process.env.CLIENT_ID || client.user.id;
         const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
+        
         try {
-            console.log('Registrando comandos globales...');
-            await rest.put(Routes.applicationCommands(process.env.CLIENT_ID), { body: commands });
-            console.log('✅ ¡Comandos registrados!');
+            console.log('Registrando comandos globales de barra...');
+            await rest.put(Routes.applicationCommands(clientId), { body: commands });
+            console.log('✅ ¡Comandos globales registrados en los servidores de Discord!');
         } catch (error) {
             console.error('❌ Error registrando comandos:', error);
         }
@@ -241,7 +245,7 @@ function startBot() {
             return interaction.reply({ content: `✅ Se ha retirado la advertencia a **${user.tag}** con éxito.\n📄 **Razón:** ${razon}` });
         }
 
-        // --- LOGS (NUEVO COMANDO) ---
+        // --- LOGS ---
         if (commandName === 'logs') {
             const subcommand = options.getSubcommand();
             const guildId = guild.id;
