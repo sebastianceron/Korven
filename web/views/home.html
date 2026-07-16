@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+T<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -39,51 +39,63 @@
         .dropdown-content a.logout-link:hover { background: rgba(231, 76, 60, 0.1); color: #ff6b6b; }
         .user-menu:hover .dropdown-content { display: block; }
 
-        /* --- HERO CON EFECTOS DE ESPACIO --- */
-        .hero { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 90vh; text-align: center; padding: 40px 20px; background: radial-gradient(circle, rgba(102,252,241,0.08) 0%, rgba(11,12,16,1) 80%); position: relative; overflow: hidden; }
+        /* --- HERO CON EFECTOS AVANZADOS --- */
+        .hero { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 90vh; text-align: center; padding: 40px 20px; position: relative; overflow: hidden; }
         
-        /* --- FONDO DE ESTRELLAS CSS (Optimizado) --- */
-        .stars-container { position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: 0; pointer-events: none; }
-        .star { position: absolute; background-color: #fff; border-radius: 50%; }
-        .star-small { width: 2px; height: 2px; opacity: 0.5; animation: twinkle 3s infinite ease-in-out; }
-        .star-medium { width: 4px; height: 4px; opacity: 0.7; animation: twinkle 4s infinite ease-in-out; }
-        .star-big { width: 6px; height: 6px; background-color: var(--neon-blue); box-shadow: 0 0 8px var(--neon-blue); animation: twinkle 5s infinite ease-in-out; }
+        /* 1. Fondo de Grid Cibernético (Líneas tecnológicas sutiles) */
+        .cyber-grid { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: linear-gradient(rgba(102, 252, 241, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(102, 252, 241, 0.03) 1px, transparent 1px); background-size: 40px 40px; background-position: center; z-index: 0; pointer-events: none; }
+        
+        /* 2. Resplandor Radial central */
+        .glow-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 50% 50%, rgba(102, 252, 241, 0.07) 0%, rgba(11, 12, 16, 1) 75%); z-index: 0; pointer-events: none; }
 
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.2; transform: scale(0.8); }
-            50% { opacity: 1; transform: scale(1.2); }
-        }
-
-        /* Nebulosas sutiles de fondo */
-        .nebula { position: absolute; width: 300px; height: 300px; background: radial-gradient(circle, rgba(102, 252, 241, 0.1) 0%, rgba(0,0,0,0) 70%); border-radius: 50%; filter: blur(50px); pointer-events: none; z-index: 0; }
-        .nebula-1 { top: 15%; left: 10%; animation: floatNebula 20s infinite ease-in-out; }
-        .nebula-2 { bottom: 20%; right: 10%; animation: floatNebula 25s infinite ease-in-out; }
+        /* 3. Nebulosas sutiles de fondo */
+        .nebula { position: absolute; width: 400px; height: 400px; background: radial-gradient(circle, rgba(102, 252, 241, 0.1) 0%, rgba(0,0,0,0) 70%); border-radius: 50%; filter: blur(60px); pointer-events: none; z-index: 0; }
+        .nebula-1 { top: 10%; left: 15%; animation: floatNebula 22s infinite ease-in-out; }
+        .nebula-2 { bottom: 15%; right: 15%; animation: floatNebula 28s infinite ease-in-out; }
 
         @keyframes floatNebula {
             0%, 100% { transform: translate(0, 0) scale(1); }
-            50% { transform: translate(30px, -30px) scale(1.2); }
+            50% { transform: translate(40px, -40px) scale(1.15); }
         }
 
-        /* --- CABEZA DE ROBOT FLOTANTE GIGANTE --- */
-        .robot-background { position: absolute; width: 320px; height: 320px; z-index: 1; opacity: 0.12; pointer-events: none; filter: drop-shadow(0 0 35px var(--neon-blue)); animation: floatBot 12s ease-in-out infinite; }
+        /* 4. Estrellas de fondo generadas de forma ultra compacta en CSS */
+        .stars { position: absolute; width: 2px; height: 2px; background: transparent; pointer-events: none; z-index: 0; }
+        .stars-1 {
+            box-shadow: 10vw 20vh #fff, 30vw 10vh rgba(255,255,255,0.7), 80vw 15vh #fff, 90vw 40vh rgba(255,255,255,0.5), 15vw 75vh #fff, 50vw 80vh #fff, 85vw 85vh rgba(255,255,255,0.8), 5vw 45vh #fff, 75vw 60vh rgba(102, 252, 241, 0.7), 45vw 30vh #fff;
+            animation: twinkle 4s infinite ease-in-out;
+        }
+        .stars-2 {
+            width: 3px; height: 3px;
+            box-shadow: 25vw 25vh rgba(102, 252, 241, 0.8), 70vw 35vh #fff, 40vw 65vh rgba(255,255,255,0.6), 60vw 15vh #fff, 95vw 70vh rgba(102, 252, 241, 0.9), 10vw 90vh #fff, 55vw 50vh #fff, 80vw 75vh rgba(255,255,255,0.4);
+            animation: twinkle 6s infinite ease-in-out;
+            animation-delay: 1.5s;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        /* --- CABEZA DE ROBOT FLOTANTE --- */
+        .robot-background { position: absolute; width: 280px; height: 280px; z-index: 1; opacity: 0.15; pointer-events: none; filter: drop-shadow(0 0 30px var(--neon-blue)); animation: floatBot 14s ease-in-out infinite; }
         
         @keyframes floatBot {
             0% { transform: translateY(0px) translateX(0px) scale(1) rotate(0deg); }
-            25% { transform: translateY(-25px) translateX(20px) scale(1.1) rotate(6deg); }
-            50% { transform: translateY(15px) translateX(-15px) scale(0.9) rotate(-6deg); }
-            75% { transform: translateY(-20px) translateX(-20px) scale(1.05) rotate(4deg); }
+            25% { transform: translateY(-20px) translateX(15px) scale(1.08) rotate(4deg); }
+            50% { transform: translateY(10px) translateX(-10px) scale(0.92) rotate(-4deg); }
+            75% { transform: translateY(-15px) translateX(-15px) scale(1.04) rotate(2deg); }
             100% { transform: translateY(0px) translateX(0px) scale(1) rotate(0deg); }
         }
 
-        /* Estructura del Robot en CSS (Tamaño Ajustado al Doble) */
+        /* Estructura del Robot */
         .robot-head { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
-        .bot-antenna { width: 16px; height: 40px; background: var(--neon-blue); border-radius: 8px; position: relative; }
-        .bot-antenna::before { content: ''; position: absolute; top: -18px; left: -10px; width: 36px; height: 36px; background: var(--neon-blue); border-radius: 50%; box-shadow: 0 0 25px var(--neon-blue); }
-        .bot-ears { width: 260px; height: 45px; background: var(--neon-dark); position: absolute; top: 90px; border-radius: 12px; z-index: -1; }
-        .bot-face { width: 210px; height: 180px; background: var(--bg-secondary); border: 7px solid var(--neon-blue); border-radius: 40px; display: flex; flex-direction: column; justify-content: space-around; padding: 25px; position: relative; }
+        .bot-antenna { width: 14px; height: 35px; background: var(--neon-blue); border-radius: 6px; position: relative; }
+        .bot-antenna::before { content: ''; position: absolute; top: -14px; left: -8px; width: 30px; height: 30px; background: var(--neon-blue); border-radius: 50%; box-shadow: 0 0 20px var(--neon-blue); }
+        .bot-ears { width: 220px; height: 35px; background: var(--neon-dark); position: absolute; top: 80px; border-radius: 10px; z-index: -1; }
+        .bot-face { width: 180px; height: 155px; background: var(--bg-secondary); border: 6px solid var(--neon-blue); border-radius: 35px; display: flex; flex-direction: column; justify-content: space-around; padding: 20px; position: relative; }
         .bot-eyes { display: flex; justify-content: space-between; width: 100%; padding: 0 10px; }
-        .bot-eye { width: 42px; height: 42px; background: var(--neon-blue); border-radius: 50%; box-shadow: 0 0 25px var(--neon-blue); animation: blinkBot 4.5s infinite; }
-        .bot-mouth { width: 90px; height: 14px; background: var(--neon-blue); border-radius: 8px; align-self: center; box-shadow: 0 0 15px var(--neon-blue); }
+        .bot-eye { width: 36px; height: 36px; background: var(--neon-blue); border-radius: 50%; box-shadow: 0 0 20px var(--neon-blue); animation: blinkBot 4.5s infinite; }
+        .bot-mouth { width: 70px; height: 12px; background: var(--neon-blue); border-radius: 6px; align-self: center; box-shadow: 0 0 12px var(--neon-blue); }
         
         @keyframes blinkBot {
             0%, 95%, 100% { transform: scaleY(1); }
@@ -120,19 +132,12 @@
     </header>
     
     <section class="hero">
+        <div class="cyber-grid"></div>
+        <div class="glow-overlay"></div>
         <div class="nebula nebula-1"></div>
         <div class="nebula nebula-2"></div>
-
-        <div class="stars-container">
-            <div class="star star-small" style="top: 10%; left: 15%; animation-delay: 0.5s;"></div>
-            <div class="star star-medium" style="top: 25%; left: 80%; animation-delay: 1.2s;"></div>
-            <div class="star star-big" style="top: 70%; left: 12%; animation-delay: 0.2s;"></div>
-            <div class="star star-small" style="top: 85%; left: 75%; animation-delay: 2s;"></div>
-            <div class="star star-medium" style="top: 40%; left: 8%; animation-delay: 0.8s;"></div>
-            <div class="star star-small" style="top: 15%; left: 88%; animation-delay: 1.7s;"></div>
-            <div class="star star-big" style="top: 60%; left: 85%; animation-delay: 2.3s;"></div>
-            <div class="star star-medium" style="top: 80%; left: 25%; animation-delay: 0.1s;"></div>
-        </div>
+        <div class="stars stars-1"></div>
+        <div class="stars stars-2"></div>
 
         <div class="robot-background">
             <div class="robot-head">
@@ -170,7 +175,6 @@
     <footer><p>&copy; 2026 <span>Korven Bot</span>. Smart Moderation.</p></footer>
 
     <script>
-        // Consultamos al servidor si hay una sesión activa
         async function checkAuth() {
             try {
                 const res = await fetch('/api/user/me');
@@ -180,11 +184,7 @@
 
                 if (res.ok) {
                     const data = await res.json();
-                    
-                    // Permisos requeridos del bot calculados (Permissions: 1099850125398)
                     const permissions = "1099850125398"; 
-                    
-                    // Configuración de la URL de invitación sin administrador
                     inviteBtn.href = `https://discord.com/oauth2/authorize?client_id=${data.clientId}&permissions=${permissions}&scope=bot%20applications.commands`;
                     
                     if (data.loggedIn) {
