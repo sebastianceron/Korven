@@ -51,7 +51,14 @@
 
     <div class="sidebar">
         <div>
-            <div class="sidebar-header"><h2><a href="/">KORVEN PANEL</a></h2></div>
+            <div class="sidebar-header">
+                <h2 style="display: flex; align-items: center; gap: 10px; justify-content: center;">
+                    <a href="/" style="color: var(--accent-blue); text-decoration: none; display: flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-chevron-left" style="font-size: 1.1rem; transition: transform 0.3s;" onmouseover="this.style.transform='translateX(-3px)'" onmouseout="this.style.transform='translateX(0)'"></i> 
+                        KORVEN PANEL
+                    </a>
+                </h2>
+            </div>
             <div class="server-select-box">
                 <label>Servidor Activo</label>
                 <select class="server-select" id="guild-selector" onchange="loadGuildSettings()">
