@@ -95,8 +95,21 @@
 
                 if (res.ok) {
                     const data = await res.json();
-                    // Setear ID de invitación
-                    inviteBtn.href = `https://discord.com/oauth2/authorize?client_id=${data.clientId}&permissions=8&scope=bot%20applications.commands`;
+                    
+                    // Permisos requeridos del bot calculados (Permissions: 1544420438):
+                    // - Manage Roles (268435456)
+                    // - Manage Channels (16)
+                    // - Kick Members (2)
+                    // - Ban Members (4)
+                    // - View Channel (1024)
+                    // - Send Messages (2048)
+                    // - Manage Messages (8192)
+                    // - Read Message History (65536)
+                    // - Moderate Members (1099511627776) -> Timeout
+                    const permissions = "1099850125398"; 
+                    
+                    // Configuración de la URL de invitación sin administrador
+                    inviteBtn.href = `https://discord.com/oauth2/authorize?client_id=${data.clientId}&permissions=${permissions}&scope=bot%20applications.commands`;
                     
                     if (data.loggedIn) {
                         dashBtn.href = '/dashboard';
