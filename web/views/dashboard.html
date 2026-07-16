@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Korven - Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-dark: #0b0c10;
+            --sidebar-bg: #1f2833;
+            --accent-blue: #66fcf1;
+            --text-light: #ffffff;
+            --text-muted: #c5c6c7;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background: var(--bg-dark); color: var(--text-light); display: flex; height: 100vh; overflow: hidden; }
+
+        /* --- SIDEBAR --- */
+        .sidebar { width: 280px; background-color: var(--sidebar-bg); display: flex; flex-direction: column; justify-content: space-between; border-right: 1px solid rgba(102, 252, 241, 0.1); padding: 20px; }
+        .sidebar-header { text-align: center; padding-bottom: 20px; border-bottom: 1px solid rgba(197, 198, 199, 0.1); }
+        .sidebar-header h2 { color: var(--accent-blue); letter-spacing: 1px; font-size: 1.4rem; }
+        .sidebar-header h2 a { color: var(--accent-blue); text-decoration: none; }
+        .server-select-box { margin: 20px 0; }
+        .server-select-box label { font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 8px; }
+        .server-select { width: 100%; padding: 10px; background: var(--bg-dark); border: 1px solid var(--accent-blue); color: var(--text-light); border-radius: 6px; outline: none; }
+        .nav-menu { display: flex; flex-direction: column; gap: 10px; }
+        .nav-item { display: flex; align-items: center; gap: 15px; padding: 12px 15px; color: var(--text-muted); text-decoration: none; border-radius: 8px; transition: all 0.3s; font-weight: 500; cursor: pointer; }
+        .nav-item:hover, .nav-item.active { background: rgba(102, 252, 241, 0.1); color: var(--accent-blue); }
+        .user-profile { display: flex; align-items: center; gap: 12px; padding-top: 15px; border-top: 1px solid rgba(197, 198, 199, 0.1); }
+        .user-avatar { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--accent-blue); }
+        .user-info { display: flex; flex-direction: column; }
+        .username { font-weight: bold; font-size: 0.95rem; }
+        .logout-btn { font-size: 0.75rem; color: #e74c3c; text-decoration: none; font-weight: bold; }
+
+        /* --- CONTENIDO --- */
+        .main-content { flex: 1; padding: 40px; overflow-y: auto; display: flex; flex-direction: column; gap: 30px; }
+        .content-section { display: none; background: rgba(31, 40, 51, 0.4); border: 1px solid rgba(102, 252, 241, 0.05); padding: 30px; border-radius: 12px; }
+        .content-section.active { display: block; }
+        h1 { color: var(--accent-blue); margin-bottom: 10px; }
+        .subtitle { color: var(--text-muted); margin-bottom: 25px; }
+        .form-group { margin-bottom: 20px; display: flex; flex-direction: column; gap: 8px; }
+        .form-group label { font-weight: bold; }
+        .form-control { padding: 12px; background: var(--bg-dark); border: 1px solid rgba(197, 198, 199, 0.2); color: var(--text-light); border-radius: 8px; outline: none; }
+        .form-control:focus { border-color: var(--accent-blue); }
+        .save-btn { background: var(--accent-blue); color: var(--bg-dark); border: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; display: inline-flex; width: fit-content; }
+        .save-btn:hover { background: var(--text-light); }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div>
+            <div class="sidebar-header"><h2><a href="/">KORVEN PANEL</a></h2></div>
+            <div class="server-select-box">
+                <label>Servidor Activo</label>
+                <select class="server-select" id="guild-selector" onchange="loadGuildSettings()">
+                    </select>
+            </div>
+            <div class="nav-menu">
+                <div class="nav-item active" onclick="switchSection('welcome-section', this)">
+                    <i class="fas fa-door-open"></i> Bienvenidas
+                </div>
+                <div class="nav-item" onclick="switchSection('autorole-section', this)">
+                    <i class="fas fa-user-tag"></i> Auto Roles
+                </div>
+            </div>
+        </div>
+        <div class="user-profile">
+            <img class="user-avatar" id="user-avatar" src="" alt="Avatar">
+            <div class="user-info">
+                <span class="username" id="username">Cargando...</span>
+                <a href="/api/auth/logout" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div id="welcome-section" class="content-section active">
+            <h1>Configuración de Bienvenidas</h1>
+            <p class="subtitle">Personaliza cómo recibe Korven a los nuevos miembros.</p>
+            <div class="form-group">
+                <label>ID del Canal de Bienvenida</label>
+                <input type="text" class="form-control" placeholder="Ej: 112233445566778899" id="welcome-channel">
+            </div>
+            <div class="form-group">
+                <label>Mensaje de Bienvenida</label>
+                <textarea class="form-control" rows="4" placeholder="¡Hola {user}! Bienvenido." id="welcome-message"></textarea>
+            </div>
+            <button class="save-btn" onclick="saveWelcome()"><i class="fas fa-save"></i> Guardar Ajustes</button>
+        </div>
+
+        <div id="autorole-section" class="content-section">
+            <h1>Configuración de Auto Roles</h1>
+            <p class="subtitle">Asigna roles de forma automática a los nuevos miembros.</p>
+            <div class="form-group">
+                <label>ID del Rol Automático</label>
+                <input type="text" class="form-control" placeholder="Ej: 998877665544332211" id="autorole-id">
+            </div>
+            <button class="save-btn" onclick="saveAutorole()"><i class="fas fa-save"></i> Guardar Ajustes</button>
+        </div>
+    </div>
+
+    <script>
+        function switchSection(sectionId, element) {
+            document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            element.classList.add('active');
+        }
+
+        // Cargar información del usuario e inicializar select de servidores
+        async function initDashboard() {
+            try {
+                const res = await fetch('/api/user/me');
+                if (!res.ok) {
+                    window.location.href = '/api/auth/login';
+                    return;
+                }
+                const data = await res.json();
+                
+                // Setear datos del perfil
+                document.getElementById('username').innerText = data.user.username;
+                document.getElementById('user-avatar').src = `https://cdn.discordapp.com/avatars/${data.user.id}/${data.user.avatar}.png`;
+
+                // Filtrar y renderizar servidores con ADMIN (permiso 0x8)
+                const adminGuilds = data.user.guilds.filter(guild => (guild.permissions & 0x8) === 0x8);
+                const selector = document.getElementById('guild-selector');
+                
+                if (adminGuilds.length === 0) {
+                    selector.innerHTML = '<option disabled selected>No tienes servidores administrados</option>';
+                } else {
+                    selector.innerHTML = adminGuilds.map(guild => `<option value="${guild.id}">${guild.name}</option>`).join('');
+                    loadGuildSettings();
+                }
+            } catch (err) {
+                console.error("Error al cargar dashboard:", err);
+            }
+        }
+
+        async function loadGuildSettings() {
+            const guildId = document.getElementById('guild-selector').value;
+            if(!guildId) return;
+            const res = await fetch('/api/settings/' + guildId);
+            const data = await res.json();
+            document.getElementById('welcome-channel').value = data.welcomeChannel || '';
+            document.getElementById('welcome-message').value = data.welcomeMessage || '';
+            document.getElementById('autorole-id').value = data.autoroleId || '';
+        }
+
+        async function saveWelcome() {
+            const guildId = document.getElementById('guild-selector').value;
+            const welcomeChannel = document.getElementById('welcome-channel').value;
+            const welcomeMessage = document.getElementById('welcome-message').value;
+            const res = await fetch('/api/settings/' + guildId, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ welcomeChannel, welcomeMessage })
+            });
+            if (res.ok) alert('✅ ¡Ajustes de Bienvenida guardados!');
+        }
+
+        async function saveAutorole() {
+            const guildId = document.getElementById('guild-selector').value;
+            const autoroleId = document.getElementById('autorole-id').value;
+            const res = await fetch('/api/settings/' + guildId, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ autoroleId })
+            });
+            if (res.ok) alert('✅ ¡Auto Rol guardado!');
+        }
+
+        window.onload = initDashboard;
+    </script>
+</body>
+</html>
+

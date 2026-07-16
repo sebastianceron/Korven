@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Korven - Smart Moderation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-primary: #0b0c10;
+            --bg-secondary: #1f2833;
+            --text-primary: #ffffff;
+            --text-secondary: #c5c6c7;
+            --neon-blue: #66fcf1;
+            --neon-dark: #45a29e;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: var(--bg-primary); color: var(--text-primary); overflow-x: hidden; }
+        
+        /* --- NAVBAR --- */
+        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 8%; border-bottom: 1px solid rgba(102, 252, 241, 0.1); background: rgba(11, 12, 16, 0.95); position: sticky; top: 0; z-index: 1000; backdrop-filter: blur(10px); }
+        .logo-text { font-size: 1.5rem; font-weight: 800; letter-spacing: 2px; color: var(--neon-blue); text-shadow: 0 0 10px rgba(102, 252, 241, 0.3); text-decoration: none; }
+        
+        /* Botón Login */
+        .btn-login-nav { background: transparent; border: 1px solid var(--neon-blue); color: var(--neon-blue); padding: 8px 16px; border-radius: 6px; font-weight: bold; text-decoration: none; display: flex; align-items: center; gap: 8px; transition: all 0.3s; font-size: 0.9rem; }
+        .btn-login-nav:hover { background: var(--neon-blue); color: var(--bg-primary); box-shadow: 0 0 15px rgba(102, 252, 241, 0.4); }
+
+        /* Menú de Usuario */
+        .user-menu { position: relative; display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 5px 10px; border-radius: 8px; transition: background 0.3s; }
+        .user-menu:hover { background: rgba(255, 255, 255, 0.05); }
+        .nav-avatar { width: 35px; height: 35px; border-radius: 50%; border: 2px solid var(--neon-blue); }
+        .nav-username { font-weight: bold; font-size: 0.95rem; color: var(--text-primary); }
+        
+        /* Dropdown */
+        .dropdown-content { display: none; position: absolute; top: 110%; right: 0; background-color: var(--bg-secondary); min-width: 160px; border: 1px solid rgba(102, 252, 241, 0.1); border-radius: 8px; overflow: hidden; z-index: 1; box-shadow: 0 8px 16px rgba(0,0,0,0.5); }
+        .dropdown-content a { color: var(--text-primary); padding: 12px 16px; text-decoration: none; display: flex; align-items: center; gap: 10px; font-size: 0.9rem; transition: background 0.3s; }
+        .dropdown-content a:hover { background: rgba(102, 252, 241, 0.1); color: var(--neon-blue); }
+        .dropdown-content a.logout-link { color: #e74c3c; border-top: 1px solid rgba(255,255,255,0.05); }
+        .dropdown-content a.logout-link:hover { background: rgba(231, 76, 60, 0.1); color: #ff6b6b; }
+        .user-menu:hover .dropdown-content { display: block; }
+
+        /* --- HERO --- */
+        .hero { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 80vh; text-align: center; padding: 40px 20px; background: radial-gradient(circle, rgba(102,252,241,0.05) 0%, rgba(11,12,16,1) 70%); }
+        .hero-badge { background-color: var(--bg-secondary); border: 1px solid var(--neon-blue); padding: 6px 16px; border-radius: 50px; font-size: 0.9rem; color: var(--neon-blue); font-weight: bold; margin-bottom: 25px; display: flex; align-items: center; gap: 8px; }
+        .hero-badge span { width: 10px; height: 10px; background-color: #2ecc71; border-radius: 50%; display: inline-block; }
+        .hero h1 { font-size: 4rem; font-weight: 900; margin-bottom: 15px; }
+        .hero h1 span { color: var(--neon-blue); text-shadow: 0 0 20px rgba(102, 252, 241, 0.4); }
+        .hero p { color: var(--text-secondary); font-size: 1.3rem; max-width: 600px; margin-bottom: 40px; line-height: 1.6; }
+        .btn-group { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; }
+        .btn { padding: 14px 28px; border-radius: 8px; font-size: 1rem; font-weight: bold; text-decoration: none; transition: all 0.3s ease; display: flex; align-items: center; gap: 10px; }
+        .btn-primary { background-color: var(--neon-blue); color: var(--bg-primary); }
+        .btn-primary:hover { background-color: var(--neon-dark); transform: translateY(-3px); color: var(--text-primary); }
+        .btn-secondary { background-color: var(--bg-secondary); color: var(--text-primary); border: 1px solid rgba(197, 198, 199, 0.2); }
+        .btn-secondary:hover { border-color: var(--neon-blue); transform: translateY(-3px); }
+        .stats-container { background-color: var(--bg-secondary); padding: 50px 8%; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; text-align: center; border-top: 1px solid rgba(102, 252, 241, 0.1); border-bottom: 1px solid rgba(102, 252, 241, 0.1); }
+        .stat-card h3 { font-size: 2.5rem; color: var(--neon-blue); margin-bottom: 10px; }
+        .stat-card p { color: var(--text-secondary); font-size: 0.95rem; text-transform: uppercase; }
+        footer { padding: 40px; text-align: center; border-top: 1px solid rgba(197, 198, 199, 0.05); color: var(--text-secondary); }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="/" class="logo-text">KORVEN</a>
+        <div id="auth-section">
+            </div>
+    </header>
+    <section class="hero">
+        <div class="hero-badge"><span></span> Online • Uptime 99.99%</div>
+        <h1>PROTECCIÓN <span>INTELIGENTE</span></h1>
+        <p>El bot definitivo de moderación, automoderación y gestión de comunidades de Discord.</p>
+        <div class="btn-group">
+            <a id="invite-btn" href="#" target="_blank" class="btn btn-primary">
+                <i class="fab fa-discord"></i> Invitar a Korven
+            </a>
+            <a id="dash-btn" href="/api/auth/login" class="btn btn-secondary">
+                <i class="fas fa-sliders-h"></i> Ir al Dashboard
+            </a>
+        </div>
+    </section>
+    <section class="stats-container">
+        <div class="stat-card"><h3>1,254</h3><p>👥 Servidores</p></div>
+        <div class="stat-card"><h3>284,000</h3><p>👤 Usuarios Protegidos</p></div>
+        <div class="stat-card"><h3>15,203,114</h3><p>⚡ Acciones Realizadas</p></div>
+    </section>
+    <footer><p>&copy; 2026 <span>Korven Bot</span>. Smart Moderation.</p></footer>
+
+    <script>
+        // Consultamos al servidor si hay una sesión activa para cambiar el botón de la barra de navegación
+        async function checkAuth() {
+            try {
+                const res = await fetch('/api/user/me');
+                const authSection = document.getElementById('auth-section');
+                const dashBtn = document.getElementById('dash-btn');
+                const inviteBtn = document.getElementById('invite-btn');
+
+                if (res.ok) {
+                    const data = await res.json();
+                    // Setear ID de invitación
+                    inviteBtn.href = `https://discord.com/oauth2/authorize?client_id=${data.clientId}&permissions=8&scope=bot%20applications.commands`;
+                    
+                    if (data.loggedIn) {
+                        dashBtn.href = '/dashboard';
+                        authSection.innerHTML = `
+                            <div class="user-menu">
+                                <img class="nav-avatar" src="https://cdn.discordapp.com/avatars/${data.user.id}/${data.user.avatar}.png" alt="Avatar">
+                                <span class="nav-username">${data.user.username}</span>
+                                <div class="dropdown-content">
+                                    <a href="/dashboard"><i class="fas fa-sliders-h"></i> Dashboard</a>
+                                    <a href="/api/auth/logout" class="logout-link"><i class="fas fa-sign-out-alt"></i> Salir</a>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        authSection.innerHTML = `
+                            <a href="/api/auth/login" class="btn-login-nav">
+                                <i class="fab fa-discord"></i> Login Discord
+                            </a>
+                        `;
+                    }
+                }
+            } catch (err) {
+                console.error("Error al comprobar la sesión:", err);
+            }
+        }
+        window.onload = checkAuth;
+    </script>
+</body>
+</html>
+
